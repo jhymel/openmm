@@ -1,0 +1,50 @@
+John Hymel
+Date: 12/15/2020
+
+Important OpenMM Classes
+This file is just meant to be a quick overview of the OpenMM class structure
+
+Classes:
+- Simulation
+- Topology
+- ForceField
+- PDBFile
+- Context
+- State
+- Force
+- Integrator
+
+Simulation:
+A Simulation ties together various objects used for running a simulation: a Topology, System, Integrator, and Context. To use it, you provide the Topology, System, and Integrator, and it creates the Context automatically
+Simulation also maintains a list of "reporter" objects that record or analyze data as the simulation runs, such as writing coordinates to files or displaying structures on the screen. For example, the following line will cause a file called "output.pdb" to be created, and a structure written to it every 1000 time steps:
+		simulation.reporters.append(PDBReporter('output.pdb', 1000))
+
+Topology:
+Topology stores the topological information about a system.
+The structure of a Topology object is similar to that of a PDB file. It consists of a set of Chains (often but not always corresponding to polymer chains). Each Chain contains a set of Residues, and each Residue contains a set of Atoms. In addition, the Topology stores a list of which atom pairs are bonded to each other, and the dimensions of the crystallographic unit cell.
+
+ForceField:
+A ForceField constructs OpenMM System objects based on a Topology.
+	 	forcefield = ForceField('amber14-all.xml', 'amber14/tip3pfb.xml')
+		system = forcefield.createSystem(pdb.topology, nonbondedMethod=PME, nonbondedCutoff=1*nanometer, constraints=HBonds)
+
+PDBFile:
+PDBFile parses a Protein Data Bank (PDB) file and constructs a Topology and a set of atom positions from it.
+This class also provides methods for creating PDB files. To write a file containing a single model, call writeFile(). You also can create files that contain multiple models. To do this, first call writeHeader(), then writeModel() once for each model in the file, and finally writeFooter() to complete the file.
+
+Context:
+A Context stores the complete state of a simulation.
+More specifically, it includes: The current time, the position of each particle, the velocity of each particle, the values of configurable parameters defined by Force objects in the System
+
+
+State:
+A State object records a snapshot of the current state of a simulation at a point in time.
+You create it by calling getState() on a Context.
+
+Force:
+Force objects apply forces to the particles in a System, or alter their behavior in other ways.
+
+Integrator:
+An Integrator defines a method for simulating a System by integrating the equations of motion.
+This is an abstract class. Subclasses define particular integration methods.
+
