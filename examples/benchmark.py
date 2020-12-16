@@ -93,7 +93,7 @@ def runOneTest(testName, options):
         else:
             dt = 0.004*unit.picoseconds
             constraints = app.HBonds
-            integ = mm.LangevinMiddleIntegrator(300*unit.kelvin, friction, dt)
+            integ = mm.LangevinIntegrator(300*unit.kelvin, friction, dt)
         system = ff.createSystem(pdb.topology, nonbondedMethod=method, nonbondedCutoff=cutoff, constraints=constraints, hydrogenMass=hydrogenMass)
     print('Step Size: %g fs' % dt.value_in_unit(unit.femtoseconds))
     properties = {}
